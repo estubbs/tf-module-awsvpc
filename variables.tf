@@ -2,10 +2,6 @@ variable "name_tag_base" {
   type = string
 }
 
-variable "common_tags" {
-  type = map(string)
-}
-
 variable "availability_zone_names" {
   type = list(string)
 }

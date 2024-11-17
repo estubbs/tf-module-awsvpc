@@ -21,6 +21,24 @@ resource "aws_network_acl_association" "networkAclAssocationPrivate" {
   subnet_id      = aws_subnet.privateSubnet[count.index].id
 }
 
+resource "aws_network_acl_rule" "all_inbound_private" {
+  network_acl_id = aws_network_acl.networkAclPrivate.id
+  protocol = -1
+  cidr_block = "0.0.0.0/0"
+  rule_action = "allow"
+  rule_number = 1
+  egress = false
+}
+
+resource "aws_network_acl_rule" "all_outbound_private" {
+  network_acl_id = aws_network_acl.networkAclPrivate.id
+  protocol = -1
+  cidr_block = "0.0.0.0/0"
+  rule_action = "allow"
+  rule_number = 1
+  egress = true
+}
+
 resource "aws_route_table" "privateRouteTable" {
   vpc_id = aws_vpc.k8svpc.id
 
@@ -57,4 +75,8 @@ resource "aws_ec2_tag" "natGatewayEniTag" {
   resource_id = aws_nat_gateway.natGateway[0].network_interface_id
   key = "Name"
   value = var.name_tag_base
+}
+
+output "private_subnets" {
+  value = aws_subnet.privateSubnet.*.id
 }

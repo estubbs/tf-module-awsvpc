@@ -35,3 +35,7 @@ resource "aws_vpc_dhcp_options_association" "dhcpOptionsAssociation" {
   dhcp_options_id = aws_vpc_dhcp_options.dhcpOptions.id
   vpc_id          = aws_vpc.k8svpc.id
 }
+
+output "vpc_id" {
+  value = aws_vpc.k8svpc.id
+}

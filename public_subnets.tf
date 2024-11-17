@@ -15,6 +15,24 @@ resource "aws_network_acl" "networkAclPublic" {
   }
 }
 
+resource "aws_network_acl_rule" "all_inbound_public" {
+  network_acl_id = aws_network_acl.networkAclPublic.id
+  protocol = -1
+  cidr_block = "0.0.0.0/0"
+  rule_action = "allow"
+  rule_number = 1
+  egress = false
+}
+
+resource "aws_network_acl_rule" "all_outbound_public" {
+  network_acl_id = aws_network_acl.networkAclPublic.id
+  protocol = -1
+  cidr_block = "0.0.0.0/0"
+  rule_action = "allow"
+  rule_number = 1
+  egress = true
+}
+
 resource "aws_network_acl_association" "networkAclAssocationPublic" {
   count          = var.public_subnet_size > 0 ? length(var.availability_zone_names) : 0
   network_acl_id = aws_network_acl.networkAclPublic.id
@@ -46,4 +64,8 @@ resource "aws_route" "publicRoute" {
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.igw[count.index].id
   route_table_id         = aws_route_table.publicRouteTable.id
+}
+
+output "public_subnets" {
+  value = aws_subnet.publicSubnet.*.id
 }
